@@ -5,7 +5,7 @@ __pycache__/
 .ipynb_checkpoints/
 
 # Generated data and databases (rebuilt by running the generator and dbt)
-data/
+/data/
 *.duckdb
 *.duckdb.wal
 
