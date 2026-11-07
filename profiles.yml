@@ -1,0 +1,8 @@
+# DuckDB is a file on this computer, so there is no password or secret here.
+telemetry_quality:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: telemetry.duckdb
+      threads: 4
