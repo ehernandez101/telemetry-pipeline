@@ -1,0 +1,27 @@
+name: dbt build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - name: Install the pinned packages
+        run: pip install -r requirements.txt
+
+      - name: Generate the synthetic data
+        run: python scripts/generate_events.py
+
+      - name: Build and test everything
+        run: dbt build

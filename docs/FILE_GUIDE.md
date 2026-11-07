@@ -22,3 +22,4 @@ One row per file: what it is, and why it exists. This is the answer to "why is t
 | `models/marts/mart_hourly_pool_quality.yml` | Descriptions and basic tests for that table | Documents every column and checks the keys are never empty |
 | `tests/assert_hourly_pool_one_row_per_grain.sql` | A custom test: no hour and pool appears twice | Duplicates at this grain would double-count sessions |
 | `tests/assert_hourly_pool_sessions_match_staging.sql` | A custom test: the mart's total sessions equal the staging row count | Proves nothing was lost or double-counted when summarizing |
+| `.github/workflows/dbt.yml` | A GitHub Actions workflow that builds the whole project on every push | Installs the pinned packages on a clean Linux machine, regenerates the synthetic data, and runs `dbt build` (all models and tests). It proves the project works from scratch, not just on my computer, and the green or red check shows on the repo page |
