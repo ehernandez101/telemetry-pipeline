@@ -1,0 +1,11 @@
+# File guide
+
+One row per file: what it is, and why it exists. This is the answer to "why is this here?" for every file in the repo. Each row is added in the same commit as the file.
+
+| File | What it is | Why it exists |
+| --- | --- | --- |
+| `README.md` | The project's front page | Says what the project is, that everything is synthetic and local, and where it stands. Results are added last, from real runs |
+| `.gitignore` | A list of things git must not track | Keeps the virtual environment, generated data, the DuckDB database file, dbt build output and local secrets out of the repo. All of it can be rebuilt, and generated files are large and make the history noisy |
+| `requirements.in` | The two packages this project asks for directly: `dbt-core` and `dbt-duckdb` | Short and readable. It records what I chose, not every package those two pull in |
+| `requirements.txt` | Every installed package with its exact version, from `pip freeze` | Makes the setup reproducible, so the CI run uses the same versions as my machine |
+| `docs/FILE_GUIDE.md` | This file | Lets me explain every file in the repo, and shows a reviewer that I can |
