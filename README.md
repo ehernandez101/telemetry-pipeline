@@ -14,7 +14,7 @@ In progress. Built so far: the synthetic event generator, an incremental staging
 - [x] dbt staging model (incremental) and two marts: daily quality by region, hourly quality by server pool
 - [ ] One snapshot and source freshness checks
 - [x] Tests, including one that fails on the messy data and is then fixed (see "What broke")
-- [ ] One query timed before and after tuning
+- [x] One query timed before and after tuning (see "Timing")
 - [x] GitHub Actions workflow that regenerates the data and runs `dbt build` (first run passed in 44 seconds)
 - [ ] Dashboard on the marts
 - [ ] Results section with numbers from a real run
@@ -23,21 +23,38 @@ In progress. Built so far: the synthetic event generator, an incremental staging
 
 From the repo root, with Python 3.14 (the version I used; CI uses the same):
 
+On Windows PowerShell:
+
 ```
 python -m venv .venv
-.venv\Scripts\Activate.ps1      # Windows PowerShell. On macOS/Linux: source .venv/bin/activate
+.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 python scripts/generate_events.py
 dbt build
 ```
 
+On macOS or Linux, activate with `source .venv/bin/activate` instead of the `Activate.ps1` line.
+
 `generate_events.py` writes about 2 million synthetic sessions into `data/raw/` (not committed). `dbt build` then builds the models and runs all tests. Tested on Windows 11 and on GitHub's Ubuntu runner.
+
+## Timing: one query, two ways
+
+Question: which 10 pool-hours had the worst 95th-percentile startup time (ignoring hours with fewer than 100 sessions)?
+
+| Version | Median of 5 runs | Range |
+| --- | --- | --- |
+| From the raw files (de-duplicate and compute percentiles on every run) | 273.5 ms | 259.5 to 297.4 ms |
+| From the pre-built `mart_hourly_pool_quality` | 0.8 ms | 0.7 to 0.9 ms |
+
+`scripts/time_query.py` runs both, checks that they return the same 10 rows (they do), and reports a 363x speed-up from the unrounded medians.
+
+Caveats: 2 million synthetic rows, one Windows computer, warm file cache. The mart is fast because dbt did the work ahead of time during the build, so its answer is only as fresh as the last build.
 
 ## What broke
 
 **Missing column.** The second raw file (events from 2026-10-13 onward) has no `stall_count` column. The staging model fills it with NULL. The test `not_null` on `stall_count` failed on 285,321 rows, the number of sessions in that file. The failing state was committed first (`b0763b8`).
 
-The fix is in the next commit. The values are not filled with 0, because that would claim no stalls happened. Instead the test now applies only to events before 2026-10-13, where the column exists, and the NULLs are kept. Models that use stall counts must average only over sessions that have a value, and say how many sessions that covers.
+The fix is commit `8b543ea`. The values are not filled with 0, because that would claim no stalls happened. Instead the test now applies only to events before 2026-10-13, where the column exists, and the NULLs are kept. Models that use stall counts must average only over sessions that have a value, and say how many sessions that covers.
 
 ## Rules for this repo
 
