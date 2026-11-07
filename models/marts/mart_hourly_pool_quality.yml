@@ -1,0 +1,31 @@
+version: 2
+
+models:
+  - name: mart_hourly_pool_quality
+    description: >
+      Session quality by hour (UTC) and server pool, built from stg_session_events.
+      One row per hour_start and server_pool. Traffic and quality only; the data has
+      no capacity column. Stall metrics use only sessions that have a stall_count.
+    columns:
+      - name: hour_start
+        description: Start of the UTC hour the sessions began in.
+        data_tests:
+          - not_null
+      - name: region
+        description: Region the pool belongs to.
+        data_tests:
+          - not_null
+      - name: server_pool
+        description: Server pool, for example us-east-pool-4.
+        data_tests:
+          - not_null
+      - name: sessions_started
+        description: Number of sessions that started in that hour on that pool.
+      - name: avg_startup_ms
+        description: Average milliseconds from pressing play to the first frame.
+      - name: p95_startup_ms
+        description: 95th percentile startup time in milliseconds. Noisy when sessions_started is small.
+      - name: sessions_with_stall_data
+        description: Sessions that have a stall_count value.
+      - name: stalls_per_session
+        description: Average stalls per session, over sessions that have a stall_count. NULL when none do.

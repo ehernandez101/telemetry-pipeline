@@ -18,3 +18,7 @@ One row per file: what it is, and why it exists. This is the answer to "why is t
 | `models/marts/mart_daily_region_quality.yml` | Descriptions and basic tests for that table | Documents every column and checks that the keys are never empty |
 | `tests/assert_daily_region_one_row_per_grain.sql` | A custom test: no day and region appears twice | Duplicate rows at this grain would silently double-count sessions. The test returns any such rows, so it fails if they exist |
 | `tests/assert_daily_region_sessions_match_staging.sql` | A custom test: the mart's total sessions equal the staging model's row count | Proves nothing was lost or double-counted when summarizing |
+| `models/marts/mart_hourly_pool_quality.sql` | A table with one row per hour per server pool summarizing session quality | Lets me spot a pool that degrades at certain hours, which is what the generator plants in one pool. Counts sessions started so thin hours can be told apart from busy ones |
+| `models/marts/mart_hourly_pool_quality.yml` | Descriptions and basic tests for that table | Documents every column and checks the keys are never empty |
+| `tests/assert_hourly_pool_one_row_per_grain.sql` | A custom test: no hour and pool appears twice | Duplicates at this grain would double-count sessions |
+| `tests/assert_hourly_pool_sessions_match_staging.sql` | A custom test: the mart's total sessions equal the staging row count | Proves nothing was lost or double-counted when summarizing |
