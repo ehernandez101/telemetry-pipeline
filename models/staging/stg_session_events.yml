@@ -1,0 +1,31 @@
+version: 2
+
+models:
+  - name: stg_session_events
+    description: >
+      One row per video session, built from the raw synthetic Parquet files.
+      Duplicate sends are removed (earliest copy kept), the missing stall_count
+      column in the later file is filled with NULL, and late arrivals are flagged.
+    columns:
+      - name: session_id
+        description: Unique session identifier, for example S00000001.
+      - name: event_time
+        description: When the session started (UTC).
+      - name: event_date
+        description: The calendar date of event_time.
+      - name: region
+        description: Region the session was served from.
+      - name: server_pool
+        description: Server pool within the region, for example us-east-pool-4.
+      - name: startup_ms
+        description: Milliseconds from pressing play to the first frame.
+      - name: stall_count
+        description: Number of playback stalls. NULL for sessions from 2026-10-13 onward, because that raw file has no such column.
+      - name: session_end
+        description: When the session ended (UTC).
+      - name: session_seconds
+        description: Session length in seconds, from event_time to session_end.
+      - name: ingested_at
+        description: When the event was received. For duplicated sessions this is the earliest copy.
+      - name: is_late
+        description: True when the event was received more than one hour after the session started.
