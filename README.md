@@ -6,15 +6,21 @@
 
 ## Status
 
-Setup only. Nothing is built yet. The planned steps, in order:
+In progress. Built so far: the synthetic event generator, one staging model, and tests on it. The planned steps, in order:
 
-- [ ] Synthetic event generator (with duplicates, late events and a missing column built in)
+- [x] Synthetic event generator (with duplicates, late events and a missing column built in)
 - [ ] dbt staging and mart models, one incremental model, one snapshot, source freshness checks
-- [ ] Tests, including one that fails on the messy data and is then fixed
+- [x] Tests, including one that fails on the messy data and is then fixed (see "What broke")
 - [ ] One query timed before and after tuning
 - [ ] GitHub Actions workflow running `dbt test`
 - [ ] Dashboard on the marts
 - [ ] Results section with numbers from a real run
+
+## What broke
+
+**Missing column.** The second raw file (events from 2026-10-13 onward) has no `stall_count` column. The staging model fills it with NULL. The test `not_null` on `stall_count` failed on 285,321 rows, the number of sessions in that file. The failing state was committed first (`b0763b8`).
+
+The fix is in the next commit. The values are not filled with 0, because that would claim no stalls happened. Instead the test now applies only to events before 2026-10-13, where the column exists, and the NULLs are kept. Models that use stall counts must average only over sessions that have a value, and say how many sessions that covers.
 
 ## Rules for this repo
 

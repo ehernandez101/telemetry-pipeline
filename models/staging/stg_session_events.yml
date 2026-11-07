@@ -34,9 +34,11 @@ models:
         data_tests:
           - not_null
       - name: stall_count
-        description: Number of playback stalls. NULL for sessions from 2026-10-13 onward, because that raw file has no such column.
+        description: Number of playback stalls. NULL for sessions from 2026-10-13 onward, because that raw file has no such column. Never filled with 0, because that would claim no stalls happened.
         data_tests:
-          - not_null
+          - not_null:
+              config:
+                where: "event_date < '2026-10-13'"
       - name: session_end
         description: When the session ended (UTC).
       - name: session_seconds
