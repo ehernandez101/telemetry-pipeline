@@ -9,18 +9,34 @@ models:
     columns:
       - name: session_id
         description: Unique session identifier, for example S00000001.
+        data_tests:
+          - unique
+          - not_null
       - name: event_time
         description: When the session started (UTC).
+        data_tests:
+          - not_null
       - name: event_date
         description: The calendar date of event_time.
       - name: region
         description: Region the session was served from.
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [us-east, us-west, eu-west, ap-south, sa-east]
       - name: server_pool
         description: Server pool within the region, for example us-east-pool-4.
+        data_tests:
+          - not_null
       - name: startup_ms
         description: Milliseconds from pressing play to the first frame.
+        data_tests:
+          - not_null
       - name: stall_count
         description: Number of playback stalls. NULL for sessions from 2026-10-13 onward, because that raw file has no such column.
+        data_tests:
+          - not_null
       - name: session_end
         description: When the session ended (UTC).
       - name: session_seconds
