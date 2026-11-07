@@ -1,0 +1,33 @@
+version: 2
+
+models:
+  - name: mart_daily_region_quality
+    description: >
+      Session quality by day and region, built from stg_session_events.
+      One row per event_date and region. Stall metrics use only sessions that
+      have a stall_count; see stall_data_coverage_pct.
+    columns:
+      - name: event_date
+        description: Calendar date the sessions started.
+        data_tests:
+          - not_null
+      - name: region
+        description: Region the sessions were served from.
+        data_tests:
+          - not_null
+      - name: sessions
+        description: Number of sessions that started that day in that region.
+      - name: avg_startup_ms
+        description: Average milliseconds from pressing play to the first frame.
+      - name: p95_startup_ms
+        description: 95th percentile startup time in milliseconds. 5% of sessions started slower than this.
+      - name: sessions_with_stall_data
+        description: Sessions that have a stall_count value.
+      - name: stall_data_coverage_pct
+        description: Share of the day's sessions that have a stall_count, in percent. 0 for days from 2026-10-13 onward.
+      - name: stalls_per_session
+        description: Average stalls per session, over sessions that have a stall_count. NULL when none do.
+      - name: late_sessions
+        description: Sessions received more than one hour after they started.
+      - name: late_pct
+        description: late_sessions as a percent of sessions.
