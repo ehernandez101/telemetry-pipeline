@@ -9,3 +9,4 @@ One row per file: what it is, and why it exists. This is the answer to "why is t
 | `requirements.in` | The two packages this project asks for directly: `dbt-core` and `dbt-duckdb` | Short and readable. It records what I chose, not every package those two pull in |
 | `requirements.txt` | Every installed package with its exact version, from `pip freeze` | Makes the setup reproducible, so the CI run uses the same versions as my machine |
 | `docs/FILE_GUIDE.md` | This file | Lets me explain every file in the repo, and shows a reviewer that I can |
+| `scripts/generate_events.py` | Python script that runs SQL in DuckDB to create the synthetic session events | The project has no real data, so this builds it: about 2 million sessions over 14 days, with duplicates, late-arriving events and one file missing a column added on purpose. It writes two Parquet files into `data/raw/`, which git ignores because the script can rebuild them |
